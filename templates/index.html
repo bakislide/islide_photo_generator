@@ -38,7 +38,8 @@
             font-size: 1.1em;
         }
         .container input[type="file"],
-        .container input[type="text"] {
+        .container input[type="text"],
+        .container select {
             width: calc(100% - 22px);
             padding: 12px;
             margin-bottom: 20px;
@@ -74,6 +75,13 @@
 
             <label for="text2">Text 2:</label>
             <input type="text" name="text2" id="text2" required>
+
+            <label for="base">Choose base mantra:</label>
+            <select name="base" id="base" required>
+                <option value="white">White Mantra</option>
+                <option value="black">Black Mantra</option>
+                <option value="guide">Guide Lines</option>
+            </select>
 
             <button type="submit">Generate Image</button>
         </form>

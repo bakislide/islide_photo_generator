@@ -30,9 +30,21 @@ def generate_image():
         file.save(file_path)
         print(f"File saved to: {file_path}")  # Debug print
 
-        text1 = request.form['text1']
-        text2 = request.form['text2']
-
+        text1 = request.form['text1'].upper()
+        text2 = request.form['text2'].upper()
+        base_choice = request.form['base']
+        
+        # Determine the base image and text color based on user choice
+        if base_choice == 'white':
+            base_image_path = 'static/white_base.png'
+            text_color = "white"
+        elif base_choice =="guide":
+            base_image_path = 'static/black_base_guards.png'
+            text_color = "black"
+        else:
+            base_image_path = 'static/black_base.png'
+            text_color = "black"
+            
         # Coordinates for the overlay images
         overlay_positions = [(130, 309), (570, 309)]
 
@@ -43,7 +55,6 @@ def generate_image():
         print(f"Text1 coordinates: {text1_positions}")  # Debug print
         print(f"Text2 coordinates: {text2_positions}")  # Debug print
 
-        base_image_path = 'static/base_template.png'
         try:
             base_image = Image.open(base_image_path)
             overlay_image = Image.open(file_path)
@@ -63,17 +74,17 @@ def generate_image():
             return f"Error: {e}", 400
 
         draw = ImageDraw.Draw(base_image)
-        font_path = os.path.join('static', 'arial.ttf')
+        font_path = os.path.join('static', 'College_Block.otf')
 
         try:
-            font = ImageFont.truetype(font_path, 20)  # Increased font size to 20
+            font = ImageFont.truetype(font_path, 20)  # Adjusted font size to 20
         except Exception as e:
             return f"Error loading font: {e}", 500
 
         for pos in text1_positions:
-            draw.text(pos, text1, fill="red", font=font)
+            draw.text(pos, text1, fill=text_color, font=font)
         for pos in text2_positions:
-            draw.text(pos, text2, fill="red", font=font)
+            draw.text(pos, text2, fill=text_color, font=font)
 
         img_io = io.BytesIO()
         base_image.save(img_io, 'PNG')
