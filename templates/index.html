@@ -22,6 +22,7 @@
             padding: 40px 20px 20px;
             box-sizing: border-box;
             text-align: center;
+            position: relative;
         }
         .container h1 {
             color: #333;
@@ -39,7 +40,8 @@
         }
         .container input[type="file"],
         .container input[type="text"],
-        .container select {
+        .container select,
+        .container input[type="color"] {
             width: calc(100% - 22px);
             padding: 12px;
             margin-bottom: 20px;
@@ -47,6 +49,11 @@
             border-radius: 4px;
             box-sizing: border-box;
             font-size: 1.1em;
+        }
+        .container input[type="color"] {
+            width: 50px;
+            padding: 6px;
+            vertical-align: middle;
         }
         .container button {
             background-color: #333;
@@ -60,28 +67,137 @@
         .container button:hover {
             background-color: #555;
         }
+        .container .nested-options {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .container .nested-options label {
+            margin: 10px 0 5px;
+        }
+        .container .nested-options input[type="radio"],
+        .container .nested-options input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .color-picker {
+            display: inline-block;
+        }
+        .color-preview {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        .logo-container {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
     </style>
+    <script>
+        function updateColorPreview(input, previewId) {
+            document.getElementById(previewId).style.backgroundColor = input.value;
+        }
+
+        function toggleTopTextOptions(value) {
+            if (value === 'no') {
+                document.getElementById('topTextOptions').style.display = 'none';
+            } else {
+                document.getElementById('topTextOptions').style.display = 'block';
+            }
+        }
+
+        function toggleArtOptions(value) {
+            document.getElementById('sameArtOption').style.display = (value === 'same') ? 'block' : 'none';
+            document.getElementById('differentArtOption').style.display = (value === 'different') ? 'block' : 'none';
+        }
+
+        window.onload = function() {
+            document.getElementById('sameArtOption').style.display = 'block';
+            document.getElementById('differentArtOption').style.display = 'none';
+        };
+    </script>
 </head>
 <body>
     <div class="container">
-        <img src="/static/islide_logo.png" alt="ISlide Logo">
-        <h1>Image Generator</h1>
+        <div class="logo-container">
+            <img src="/static/islide_logo.png" alt="ISlide Logo">
+        </div>
+        <h1>Mantra Art File</h1>
         <form action="/generate" method="post" enctype="multipart/form-data">
-            <label for="file">Upload an image:</label>
-            <input type="file" name="file" id="file" required>
-
-            <label for="text1">Text 1:</label>
-            <input type="text" name="text1" id="text1" >
-
-            <label for="text2">Text 2:</label>
-            <input type="text" name="text2" id="text2" >
-
-            <label for="base">Choose base mantra:</label>
-            <select name="base" id="base" required>
-                <option value="white">White Mantra</option>
-                <option value="black">Black Mantra</option>
-                <option value="guide">Guide Lines</option>
+            <label>Select Your Art:</label>
+            <select name="art_option" onchange="toggleArtOptions(this.value)" required>
+                <option value="same">Upload Same Left/Right Art</option>
+                <option value="different">Upload Different Left/Right Art</option>
+                <option value="library">Choose From Library</option>
             </select>
+
+            <div id="sameArtOption">
+                <label for="file_same">Upload an image:</label>
+                <input type="file" name="file_same" id="file_same">
+            </div>
+
+            <div id="differentArtOption" style="display: none;">
+                <label for="file_left">Upload Left image:</label>
+                <input type="file" name="file_left" id="file_left">
+                <label for="file_right">Upload Right image:</label>
+                <input type="file" name="file_right" id="file_right">
+            </div>
+
+            <label for="base">Select base template:</label>
+            <select name="base" id="base" required>
+                <option value="white">White</option>
+                <option value="black">Black</option>
+                <option value="guide">White with Guidelines</option>
+                <option value="greatwhite">Great White</option>
+                <option value="grey">Grey</option>
+                <option value="navy">Navy</option>
+                <option value="red">Red</option>
+                <option value="royalblue">Royal Blue</option>
+            </select>
+
+            <div class="nested-options">
+                <label for="top_text">Add Top Text:</label>
+                <input type="radio" name="top_text" value="no" checked onclick="toggleTopTextOptions(this.value)">No top text
+                <input type="radio" name="top_text" value="straight" onclick="toggleTopTextOptions(this.value)">Straight
+                <input type="radio" name="top_text" value="curved" onclick="toggleTopTextOptions(this.value)">Curved
+
+                <div id="topTextOptions" style="display: none;">
+                    <label for="right_top_text">Right Top Text:</label>
+                    <input type="text" name="right_top_text" id="right_top_text" maxlength="16">
+                    <div class="color-picker">
+                        <label for="right_top_text_color">Color:</label>
+                        <input type="color" name="right_top_text_color" id="right_top_text_color" onchange="updateColorPreview(this, 'right_top_text_preview')">
+                    </div>
+                    <div id="right_top_text_preview" class="color-preview"></div>
+
+                    <label for="left_top_text">Left Top Text:</label>
+                    <input type="text" name="left_top_text" id="left_top_text" maxlength="16">
+                    <div class="color-picker">
+                        <label for="left_top_text_color">Color:</label>
+                        <input type="color" name="left_top_text_color" id="left_top_text_color" onchange="updateColorPreview(this, 'left_top_text_preview')">
+                    </div>
+                    <div id="left_top_text_preview" class="color-preview"></div>
+                </div>
+
+                <label for="right_text">Right Text:</label>
+                <input type="text" name="right_text" id="right_text" maxlength="16">
+                <div class="color-picker">
+                    <label for="right_text_color">Color:</label>
+                    <input type="color" name="right_text_color" id="right_text_color" onchange="updateColorPreview(this, 'right_text_preview')">
+                </div>
+                <div id="right_text_preview" class="color-preview"></div>
+
+                <label for="left_text">Left Text:</label>
+                <input type="text" name="left_text" id="left_text" maxlength="16">
+                <div class="color-picker">
+                    <label for="left_text_color">Color:</label>
+                    <input type="color" name="left_text_color" id="left_text_color" onchange="updateColorPreview(this, 'left_text_preview')">
+                </div>
+                <div id="left_text_preview" class="color-preview"></div>
+            </div>
 
             <button type="submit">Generate Image</button>
         </form>
