@@ -45,7 +45,7 @@ def generate_image():
     left_top_text_color = request.form.get('left_top_text_color', '#000000')
     
     if base_choice == 'white':
-        base_image_path = 'static/Mantra-Mock-Templates/white.png'
+        base_image_path = 'static/Mantra-Mock-Templates/greatwhite.png'
         text_color = "black"
     elif base_choice == "guide":
         base_image_path = 'static/Mantra-Mock-Templates/white-guidelines.png'
@@ -107,9 +107,9 @@ def generate_image():
             base_image.paste(overlay_image, position, overlay_image.convert("RGBA"))
 
         overlay_image_left.thumbnail((275, 200), Image.ANTIALIAS)
-        base_image.paste(overlay_image_left, (1900, 6295), overlay_image_left.convert("RGBA"))
+        base_image.paste(overlay_image_left, (1950, 6320), overlay_image_left.convert("RGBA"))
         overlay_image_right.thumbnail((275, 200), Image.ANTIALIAS)
-        base_image.paste(overlay_image_right, (2380, 6295), overlay_image_right.convert("RGBA"))
+        base_image.paste(overlay_image_right, (2330, 6320), overlay_image_right.convert("RGBA"))
         
     except Exception as e:
         return f"Error: {e}", 400
