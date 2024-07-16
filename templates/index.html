@@ -1,206 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Image Generator</title>
+    <meta charset="UTF-8">
+    <title>Real-time Image Processing</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             color: #333;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             height: 100vh;
-            padding-top: 50px; /* Add padding to ensure the content is not cut off at the top */
         }
         .container {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 450px;
-            padding: 60px 20px 20px; /* Adjusted padding to accommodate the logo */
+            padding: 40px;
             box-sizing: border-box;
             text-align: center;
         }
-        .container h1 {
-            color: #333;
-            font-size: 2em;
-        }
-        .container img {
-            width: 150px;
+        .input-field {
             margin-bottom: 20px;
         }
-        .container label {
-            display: block;
-            margin: 15px 0 10px;
-            font-weight: bold;
-            font-size: 1.1em;
+        input[type="file"],
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
         }
-        .container input[type="file"],
-        .container input[type="text"],
-        .container select,
-        .container input[type="color"] {
-            width: calc(100% - 22px);
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1.1em;
-        }
-        .container input[type="color"] {
-            width: 50px;
-            padding: 6px;
-            vertical-align: middle;
-        }
-        .container button {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.2em;
-        }
-        .container button:hover {
-            background-color: #555;
-        }
-        .container .nested-options {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        .container .nested-options label {
-            margin: 10px 0 5px;
-        }
-        .container .nested-options input[type="radio"],
-        .container .nested-options input[type="checkbox"] {
-            margin-right: 10px;
-        }
-        .color-picker {
-            display: inline-block;
-        }
-        .color-preview {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ccc;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-        .logo-container {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
         }
     </style>
     <script>
-        function updateColorPreview(input, previewId) {
-            document.getElementById(previewId).style.backgroundColor = input.value;
-        }
+        function updateImagePreview() {
+            const formData = new FormData();
+            const imageFile = document.getElementById('imageUpload').files[0];
+            const text = document.getElementById('textInput').value;
+            formData.append('image', imageFile);
+            formData.append('text', text);
 
-        function toggleTopTextOptions(value) {
-            if (value === 'no') {
-                document.getElementById('topTextOptions').style.display = 'none';
-            } else {
-                document.getElementById('topTextOptions').style.display = 'block';
-            }
+            fetch('/image_processing/process-image', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('imagePreview').src = data.image;
+        })
+        .catch(error => console.error('Error:', error));
         }
-
-        function toggleArtOptions(value) {
-            document.getElementById('sameArtOption').style.display = (value === 'same') ? 'block' : 'none';
-            document.getElementById('differentArtOption').style.display = (value === 'different') ? 'block' : 'none';
-        }
-
-        window.onload = function() {
-            document.getElementById('sameArtOption').style.display = 'block';
-            document.getElementById('differentArtOption').style.display = 'none';
-        };
     </script>
 </head>
 <body>
     <div class="container">
-        <div class="logo-container">
-            <img src="/static/islide_logo.png" alt="ISlide Logo">
+        <h1>Image and Text Overlay Preview</h1>
+        <div class="input-field">
+            <label>Upload an image:</label>
+            <input type="file" id="imageUpload" accept="image/*" onchange="updateImagePreview()">
         </div>
-        <h1>Mantra Art File</h1>
-        <form action="/generate" method="post" enctype="multipart/form-data">
-            <label>Select Your Art:</label>
-            <select name="art_option" onchange="toggleArtOptions(this.value)" required>
-                <option value="same">Upload Same Left/Right Art</option>
-                <option value="different">Upload Different Left/Right Art</option>
-                <option value="library">Choose From Library</option>
-            </select>
-
-            <div id="sameArtOption">
-                <label for="file_same">Upload an image:</label>
-                <input type="file" name="file_same" id="file_same">
-            </div>
-
-            <div id="differentArtOption" style="display: none;">
-                <label for="file_left">Upload Left image:</label>
-                <input type="file" name="file_left" id="file_left">
-                <label for="file_right">Upload Right image:</label>
-                <input type="file" name="file_right" id="file_right">
-            </div>
-
-            <label for="base">Select base template:</label>
-            <select name="base" id="base" required>
-                <option value="white">White</option>
-                <option value="black">Black</option>
-                <option value="guide">White with Guidelines</option>
-                <option value="greatwhite">Great White</option>
-                <option value="grey">Grey</option>
-                <option value="navy">Navy</option>
-                <option value="red">Red</option>
-                <option value="royalblue">Royal Blue</option>
-            </select>
-
-            <div class="nested-options">
-                <label for="top_text">Add Top Text:</label>
-                <input type="radio" name="top_text" value="no" checked onclick="toggleTopTextOptions(this.value)">No top text
-                <input type="radio" name="top_text" value="straight" onclick="toggleTopTextOptions(this.value)">Straight
-                <input type="radio" name="top_text" value="curved" onclick="toggleTopTextOptions(this.value)">Curved
-
-                <div id="topTextOptions" style="display: none;">
-                    <label for="right_top_text">Right Top Text:</label>
-                    <input type="text" name="right_top_text" id="right_top_text" maxlength="16">
-                    <div class="color-picker">
-                        <label for="right_top_text_color">Color:</label>
-                        <input type="color" name="right_top_text_color" id="right_top_text_color" onchange="updateColorPreview(this, 'right_top_text_preview')">
-                    </div>
-                    <div id="right_top_text_preview" class="color-preview"></div>
-
-                    <label for="left_top_text">Left Top Text:</label>
-                    <input type="text" name="left_top_text" id="left_top_text" maxlength="16">
-                    <div class="color-picker">
-                        <label for="left_top_text_color">Color:</label>
-                        <input type="color" name="left_top_text_color" id="left_top_text_color" onchange="updateColorPreview(this, 'left_top_text_preview')">
-                    </div>
-                    <div id="left_top_text_preview" class="color-preview"></div>
-                </div>
-
-                <label for="right_text">Right Text:</label>
-                <input type="text" name="right_text" id="right_text" maxlength="16">
-                <div class="color-picker">
-                    <label for="right_text_color">Color:</label>
-                    <input type="color" name="right_text_color" id="right_text_color" onchange="updateColorPreview(this, 'right_text_preview')">
-                </div>
-                <div id="right_text_preview" class="color-preview"></div>
-
-                <label for="left_text">Left Text:</label>
-                <input type="text" name="left_text" id="left_text" maxlength="16">
-                <div class="color-picker">
-                    <label for="left_text_color">Color:</label>
-                    <input type="color" name="left_text_color" id="left_text_color" onchange="updateColorPreview(this, 'left_text_preview')">
-                </div>
-                <div id="left_text_preview" class="color-preview"></div>
-            </div>
-
-            <button type="submit">Generate Image</button>
-        </form>
+        <div class="input-field">
+            <label>Enter text to overlay:</label>
+            <input type="text" id="textInput" oninput="updateImagePreview()">
+        </div>
+        <img id="imagePreview" src="" alt="Image Preview" style="display: none;">
     </div>
 </body>
 </html>
