@@ -164,7 +164,7 @@ def generate_image():
         draw_text_within_box(draw, right_top_text, top_text_box_right, font, right_top_text_color)
         draw_text_within_box(draw, left_top_text, top_text_box_left, font, left_top_text_color)
     elif top_text_option == 'curved':
-        radius = 250  # Adjust as necessary
+        radius = 150  # Adjust as necessary
         draw_curved_text(draw, right_top_text, right_image_center, radius, font, right_top_text_color)
         draw_curved_text(draw, left_top_text, left_image_center, radius, font, left_top_text_color)
 
@@ -173,5 +173,6 @@ def generate_image():
     img_io.seek(0)
 
     return send_file(img_io, mimetype='image/png')
+
 
 
