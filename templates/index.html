@@ -148,21 +148,21 @@
 
             <label for="base">Select base template:</label>
             <select name="base" id="base" required>
-                <option value="white">White</option>
+                <!-- <option value="white">White</option> -->
                 <option value="black">Black</option>
-                <option value="guide">White with Guidelines</option>
+                <option value="white-guidelines">White with Guidelines</option>
                 <option value="greatwhite">Great White</option>
                 <option value="grey">Grey</option>
                 <option value="navy">Navy</option>
                 <option value="red">Red</option>
                 <option value="royalblue">Royal Blue</option>
             </select>
-
+<!-- 
             <div class="nested-options">
                 <label for="top_text">Add Top Text:</label>
                 <input type="radio" name="top_text" value="no" checked onclick="toggleTopTextOptions(this.value)">No top text
                 <input type="radio" name="top_text" value="straight" onclick="toggleTopTextOptions(this.value)">Straight
-                <!-- <input type="radio" name="top_text" value="curved" onclick="toggleTopTextOptions(this.value)">Curved -->
+                <input type="radio" name="top_text" value="curved" onclick="toggleTopTextOptions(this.value)">Curved
 
                 <div id="topTextOptions" style="display: none;">
                     <label for="right_top_text">Right Top Text:</label>
@@ -197,7 +197,7 @@
                     <input type="color" name="left_text_color" id="left_text_color" onchange="updateColorPreview(this, 'left_text_preview')">
                 </div>
                 <div id="left_text_preview" class="color-preview"></div>
-            </div>
+            </div> -->
 
             <button type="submit">Generate Image</button>
         </form>
