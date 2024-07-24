@@ -2,7 +2,7 @@
 
 Position: IT Operations @ ISlideUSA
 
-ISlide art file mock-up generator. Inputs images, text, colors, and sizing to calibrate according to ISlide's sizing charts and custom fields for each slide. This is an MVP prototype that will go into production. Live on the Google Cloud Platform.
+Project: ISlide art file mock-up generator. Inputs images, text, colors, and sizing to calibrate according to ISlide's sizing charts and custom fields for each slide. This is a Minimum Viable Product prototype that will go into production. Live on the Google Cloud Platform.
 
 
 
