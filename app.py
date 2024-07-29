@@ -1,20 +1,5 @@
-# from flask import Flask
-# from blueprints.main.routes import main
-# from blueprints.image_processing.image_processing import image_processing
-# import os
-
-# app = Flask(__name__)
-# app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
-# app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'ai'}
-
-# app.register_blueprint(main)
-# app.register_blueprint(image_processing)
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
-
 import os
-from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask import Flask, request, jsonify, send_file, send_from_directory, url_for
 import requests
 from PIL import Image
 import io
@@ -22,7 +7,7 @@ import uuid
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'generated_art'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -89,10 +74,13 @@ def process_art():
         base_image.save(processed_filepath, 'PNG')
         print(f"Processed image saved at {processed_filepath}")
 
-        return jsonify({'message': 'Art processed successfully', 'file': processed_filepath}), 200
+        # Generate a URL to access the generated image
+        image_url = url_for('serve_image', filename=processed_filename, _external=True)
+
+        return jsonify({'message': 'Art processed successfully', 'image_url': image_url}), 200
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({'error': str(e)}), 505
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/list_files', methods=['GET'])
 def list_files():
